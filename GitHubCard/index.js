@@ -2,13 +2,27 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
+//Axios:
+//get(){
+//then()}
+//catch()
 
-/* Step 2: Inspect and study the data coming back, this is YOUR 
-   github info! You will need to understand the structure of this 
-   data in order to use it to build your component function 
+const cards = document.querySelector('.cards')
+axios.get('https://api.github.com/users/draxxus702')
+    .then((response) => {
+        const newCard = cardCollector(response.data)
+        cards.append(newCard)
+        console.log(response)
+    })
+    .catch((error) => {
+        console.log(error)
+    })
+    /* Step 2: Inspect and study the data coming back, this is YOUR 
+       github info! You will need to understand the structure of this 
+       data in order to use it to build your component function 
 
-   Skip to Step 3.
-*/
+       Skip to Step 3.
+    */
 
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
@@ -24,7 +38,7 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'mahoncj', 'bigknell'];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -53,3 +67,59 @@ const followersArray = [];
   luishrd
   bigknell
 */
+
+function cardCollector(data) {
+    const card = document.createElement('div')
+    const image = document.createElement('img')
+    const cardInfo = document.createElement('div')
+    const cardName = document.createElement('h3')
+    const cardUser = document.createElement('p')
+    const cardLocation = document.createElement('p')
+    const cardProfile = document.createElement('p')
+    const anchor = document.createElement('a')
+    const cardFollowers = document.createElement('p')
+    const cardFollowing = document.createElement('p')
+    const cardBio = document.createElement('p')
+
+
+    //append
+    card.append(image)
+    card.append(cardInfo)
+    cardInfo.append(cardName)
+    cardInfo.append(cardUser)
+    cardInfo.append(cardProfile)
+    cardInfo.append(anchor)
+    cardInfo.append(cardFollowers)
+    cardInfo.append(cardFollowing)
+    cardInfo.append(cardBio)
+    cardInfo.append(cardLocation)
+
+    //classList
+    card.classList.add('card')
+    cardInfo.classList.add('card-info')
+    cardName.classList.add('name')
+    cardUser.classList.add('username')
+
+    //textContent
+    image.setAttribute('src', data.avatar_url)
+    cardName.textContent = data.login
+    cardUser.textContent = data.name
+    cardLocation.textContent = `Location: ${data.location}`
+    anchor.setAttribute('href', data.url)
+    cardFollowers.textContent = `Followers: ${data.followers}`
+    cardFollowing.textContent = `Following: ${data.following}`
+    cardBio.textContent = data.bio
+
+    return card
+}
+
+followersArray.forEach((item) => {
+    axios.get(`https://api.github.com/users/${item}`)
+        .then((response) => {
+            const newCard = cardCollector(response.data)
+            cards.append(newCard)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+})
